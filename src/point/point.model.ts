@@ -21,3 +21,15 @@ export type PointHistory = {
   amount: number;
   timeMillis: number;
 };
+
+//#region [Interface Update 2025-05-19]
+/**
+ * @summary 유저 아이디
+ */
+export type IUserID = string | number;
+
+/**
+ * @summary 유저 아이디 + null + undefined
+ */
+export type IUserIDWithEmpty = IUserID | null | undefined;
+//#endregion
