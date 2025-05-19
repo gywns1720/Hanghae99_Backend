@@ -14,16 +14,12 @@ import {
   UserPoint,
   IUserIDWithEmpty,
 } from './point.model';
-import { UserPointTable } from 'src/database/userpoint.table';
-import { PointHistoryTable } from 'src/database/pointhistory.table';
 import { PointBody as PointDto } from './point.dto';
+import { PointService } from './point.service';
 
 @Controller('/point')
 export class PointController {
-  constructor(
-    private readonly userDb: UserPointTable,
-    private readonly historyDb: PointHistoryTable,
-  ) {}
+  constructor(private service: PointService) {}
 
   /**
    * TODO - 특정 유저의 포인트를 조회하는 기능을 작성해주세요.
@@ -37,32 +33,22 @@ export class PointController {
    */
   @Get(':id')
   async point(@Param('id') id: IUserIDWithEmpty): Promise<UserPoint> {
-    // 유저를 검색하여 데이터가 있는지 체크하고 반환합니다.
-    if (typeof id === 'undefined' || id === null || isNaN(+id)) {
-      throw new BadRequestException(`id is not a valid id`);
-    }
-
-    const myUserPoint: UserPoint = await this.userDb
-      .selectById(+id)
-      .catch((err) => {
-        if (err instanceof Error) {
-          throw new BadRequestException(err.message);
-        } else {
-          throw new BadRequestException(`id is not a valid id`);
-        }
-      });
-
-    // 2. 찾은 유저의 데이터를 가지고 응답값으로 반환합니다.
-    return { id: +id, point: myUserPoint.point, updateMillis: Date.now() };
+    return await this.service.verifyId(id).findUserAsync(id, true);
   }
 
   /**
    * TODO - 특정 유저의 포인트 충전/이용 내역을 조회하는 기능을 작성해주세요.
+   *
+   * 1. 유저를 검색하여 데이터가 있는지 체크하고 반환합니다.
+   * 2. 유저 아이디 기반으로 포인트 리스트 정보를 가져옵니다.
+   */
+  /**
+   * @summary 특정 유저의 포인트 이용 내역 조회
+   * @throws {BadRequestException} id 검증 에러 발생
    */
   @Get(':id/histories')
-  async history(@Param('id') id): Promise<PointHistory[]> {
-    const userId = Number.parseInt(id);
-    return [];
+  async history(@Param('id') id: IUserIDWithEmpty): Promise<PointHistory[]> {
+    return await this.service.verifyId(id).findPointListAsync(id);
   }
 
   /**
