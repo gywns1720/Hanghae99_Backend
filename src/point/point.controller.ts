@@ -53,6 +53,12 @@ export class PointController {
 
   /**
    * TODO - 특정 유저의 포인트를 충전하는 기능을 작성해주세요.
+   1. 유저를 검색하여 데이터가 있는지 체크하고 반환합니다.
+   2. 유저의 포인트를 충전하고 충전된 유저 포인트를 반환합니다.
+   */
+  /**
+   * @summary 특정 유저의 포인트 충전
+   * @throws {BadRequestException} id 검증 에러 발생
    */
   @Patch(':id/charge')
   async charge(
@@ -64,14 +70,18 @@ export class PointController {
 
   /**
    * TODO - 특정 유저의 포인트를 사용하는 기능을 작성해주세요.
+   * 1. 유저를 검색하여 데이터가 있는지 체크하고 반환합니다.
+   * 2. 유저의 포인트를 충전하고 충전된 유저 포인트를 사용합니다..
+   */
+  /**
+   * @summary 특정 유저의 포인트 사용
+   * @throws {BadRequestException} id 검증 에러 발생 + 포인트 부족
    */
   @Patch(':id/use')
   async use(
-    @Param('id') id,
+    @Param('id') id: IUserIDWithEmpty,
     @Body(ValidationPipe) pointDto: PointDto,
   ): Promise<UserPoint> {
-    const userId = Number.parseInt(id);
-    const amount = pointDto.amount;
-    return { id: userId, point: amount, updateMillis: Date.now() };
+    return await this.service.verifyId(id).usingPointAsync(id, pointDto);
   }
 }

@@ -13,7 +13,7 @@ import { PointBody } from './point.dto';
 /**
  * @summary 포인트 서비스
  * @author HJ
- * @updated 2025-05-20 00:06
+ * @updated 2025-05-20 01:26
  */
 @Injectable()
 export class PointService {
@@ -76,43 +76,23 @@ export class PointService {
    * @param idOrPointObject {IUserID | UserPoint} 유저 아이디 혹은 유저 포인트 객체
    * @param amount {number} 충전량
    * @returns {Promise<UserPoint>}
-   * @throws {_errorNotFoundUserId}
+   * @throws {_errorNotFoundUserId} 검증 실패
    */
   async chargingPointAsync(
     idOrPointObject: IUserID | UserPoint,
     amount: number | PointBody,
   ): Promise<UserPoint> {
     // 기본값 지정
-    let userPoint: UserPoint = {
-      id: -1,
-      point: 0,
-      updateMillis: Date.now(),
-    };
+    let userPoint: UserPoint = await this._findUserPoint(idOrPointObject);
 
-    const _amount =
-      typeof amount === 'number'
-        ? amount
-        : amount instanceof PointBody ||
-            typeof (amount as PointBody).amount === 'number'
-          ? (amount as PointBody).amount
-          : -1;
+    const _amount = this._parseAmount(amount);
 
-    // amount 검사에 문제가 발생한 경우
-    if (_amount < 0) {
-      this._errorNotFoundUserId(this.ErrorName.ValidPointData);
-    }
-
-    // 유저 포인트 객체인지 아이디 인지 체크
-    if (this._isUserPoint(idOrPointObject)) {
-      userPoint = this._updateToUserPoint(idOrPointObject.id, idOrPointObject);
-    } else {
-      userPoint = await this.findUserAsync(idOrPointObject, true);
-    }
-
-    // 유저 아이디가 존재하지 않는 경우
-    if (userPoint.id < 0) {
-      this._errorNotFoundUserId(this.ErrorName.NotFoundUserId);
-    }
+    this._verifyPipe(
+      _amount,
+      userPoint,
+      this._verifyAmountLessThanZero.bind(this),
+      this._verifyAmountNotFoundUserId.bind(this),
+    );
 
     // 데이터베이스에 저장
     await Promise.all([
@@ -129,10 +109,61 @@ export class PointService {
     userPoint.point += _amount;
     return userPoint;
   }
+  /**
+   * @summary 포인트를 사용합니다.
+   * @param idOrPointObject {IUserID | UserPoint} 유저 아이디 혹은 유저 포인트 객체
+   * @param amount {number} 사용량
+   * @returns {Promise<UserPoint>}
+   * @throws {_errorNotFoundUserId} 검증 실패
+   */
+  async usingPointAsync(
+    idOrPointObject: IUserID | UserPoint,
+    amount: number | PointBody,
+  ): Promise<UserPoint> {
+    // 기본값 지정
+    let userPoint: UserPoint = await this._findUserPoint(idOrPointObject);
+
+    const _amount = this._parseAmount(amount);
+
+    this._verifyPipe(
+      _amount,
+      userPoint,
+      this._verifyAmountLessThanZero.bind(this),
+      this._verifyAmountNotFoundUserId.bind(this),
+      this._verifyPointInsufficient.bind(this),
+    );
+
+    // 데이터베이스에 저장
+    await Promise.all([
+      this.historyDb.insert(
+        userPoint.id,
+        _amount,
+        TransactionType.USE,
+        Date.now(),
+      ),
+      this.userDb.insertOrUpdate(userPoint.id, userPoint.point - _amount),
+    ]);
+
+    // 포인트 추가
+    userPoint.point -= _amount;
+    return userPoint;
+  }
 
   //#endregion
 
   //#region [Private Methods]
+
+  private _findUserPoint(
+    idOrPointObject: IUserID | UserPoint,
+  ): Promise<UserPoint> {
+    return new Promise((r) => {
+      if (this._isUserPoint(idOrPointObject)) {
+        r(this._updateToUserPoint(idOrPointObject.id, idOrPointObject));
+      } else {
+        this.findUserAsync(idOrPointObject, true).then((res) => r(res));
+      }
+    });
+  }
 
   /**
    * @summary UserPoint 을 갱신합니다.
@@ -177,9 +208,22 @@ export class PointService {
    * @private
    */
   private get ErrorName() {
+    return PointService.ErrorName;
+  }
+
+  /**
+   * @summary 에러 메세지 이름
+   * @constructor
+   * @private
+   */
+  static get ErrorName() {
     return {
+      // 유저 찾을 수 없는 경우
       NotFoundUserId: 'Failed to validate the id.',
+      // 포인트 Data 에 문제가 발생한 경우
       ValidPointData: 'Failed to validate the point.',
+      // 포인트 부족
+      InsufficientPoint: '"Insufficient points.',
     } as const;
   }
 
@@ -201,5 +245,80 @@ export class PointService {
     );
   }
 
+  /**
+   * @summary amount 값 설정
+   * @param amount {number | string | PointBody} 입력이오는 값
+   * @private
+   * @returns number -1 이면 재대로 입력이 안된 값이다.
+   */
+  private _parseAmount(amount: number | string | PointBody): number | -1 {
+    return typeof amount === 'string'
+      ? isNaN(parseInt(amount))
+        ? -1
+        : parseInt(amount)
+      : typeof amount === 'number'
+        ? amount
+        : amount instanceof PointBody ||
+            typeof (amount as PointBody).amount === 'number'
+          ? (amount as PointBody).amount
+          : -1;
+  }
+
+  /**
+   * @summary amount 가 Zero 미만 인 경우
+   * @param amount
+   * @param _
+   * @private
+   */
+  private _verifyAmountLessThanZero(
+    amount: number,
+    _: UserPoint,
+  ): void | never {
+    if (amount < 0) this._errorNotFoundUserId(this.ErrorName.ValidPointData);
+  }
+
+  /**
+   * @summary userPoint id 값이 존재하지 않는 경우
+   * @param amount
+   * @param userPoint
+   * @private
+   */
+  private _verifyAmountNotFoundUserId(
+    amount: number,
+    userPoint: UserPoint,
+  ): void | never {
+    if (userPoint.id < 0)
+      this._errorNotFoundUserId(this.ErrorName.ValidPointData);
+  }
+  /**
+   * @summary Point 부족
+   * @param amount
+   * @param userPoint
+   * @private
+   */
+  private _verifyPointInsufficient(
+    amount: number,
+    userPoint: UserPoint,
+  ): void | never {
+    if (userPoint.point - amount < 0)
+      this._errorNotFoundUserId(this.ErrorName.InsufficientPoint);
+  }
+
+  /**
+   * @summary 검증 파이프
+   * @param amount {number} 값
+   * @param userPoint {UserPoint} 유저 포인트
+   * @param callbacks {(amount: number, userPoint: UserPoint) => void | never} 콜백함수 배열
+   * @private
+   */
+  private _verifyPipe(
+    amount: number,
+    userPoint: UserPoint,
+    ...callbacks: Array<(amount: number, userPoint: UserPoint) => void | never>
+  ) {
+    for (let i = 0; i < callbacks.length; i++) {
+      callbacks[i](amount, userPoint);
+    }
+  }
   //#endregion
 }
