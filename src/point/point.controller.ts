@@ -56,12 +56,10 @@ export class PointController {
    */
   @Patch(':id/charge')
   async charge(
-    @Param('id') id,
+    @Param('id') id: IUserIDWithEmpty,
     @Body(ValidationPipe) pointDto: PointDto,
   ): Promise<UserPoint> {
-    const userId = Number.parseInt(id);
-    const amount = pointDto.amount;
-    return { id: userId, point: amount, updateMillis: Date.now() };
+    return await this.service.verifyId(id).chargingPointAsync(id, pointDto);
   }
 
   /**

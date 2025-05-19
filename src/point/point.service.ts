@@ -5,8 +5,10 @@ import {
   IUserID,
   IUserIDWithEmpty,
   PointHistory,
+  TransactionType,
   UserPoint,
 } from './point.model';
+import { PointBody } from './point.dto';
 
 /**
  * @summary 포인트 서비스
@@ -69,6 +71,65 @@ export class PointService {
     return this;
   }
 
+  /**
+   * @summary 포인트를 충전합니다.
+   * @param idOrPointObject {IUserID | UserPoint} 유저 아이디 혹은 유저 포인트 객체
+   * @param amount {number} 충전량
+   * @returns {Promise<UserPoint>}
+   * @throws {_errorNotFoundUserId}
+   */
+  async chargingPointAsync(
+    idOrPointObject: IUserID | UserPoint,
+    amount: number | PointBody,
+  ): Promise<UserPoint> {
+    // 기본값 지정
+    let userPoint: UserPoint = {
+      id: -1,
+      point: 0,
+      updateMillis: Date.now(),
+    };
+
+    const _amount =
+      typeof amount === 'number'
+        ? amount
+        : amount instanceof PointBody ||
+            typeof (amount as PointBody).amount === 'number'
+          ? (amount as PointBody).amount
+          : -1;
+
+    // amount 검사에 문제가 발생한 경우
+    if (_amount < 0) {
+      this._errorNotFoundUserId(this.ErrorName.ValidPointData);
+    }
+
+    // 유저 포인트 객체인지 아이디 인지 체크
+    if (this._isUserPoint(idOrPointObject)) {
+      userPoint = this._updateToUserPoint(idOrPointObject.id, idOrPointObject);
+    } else {
+      userPoint = await this.findUserAsync(idOrPointObject, true);
+    }
+
+    // 유저 아이디가 존재하지 않는 경우
+    if (userPoint.id < 0) {
+      this._errorNotFoundUserId(this.ErrorName.NotFoundUserId);
+    }
+
+    // 데이터베이스에 저장
+    await Promise.all([
+      this.historyDb.insert(
+        userPoint.id,
+        _amount,
+        TransactionType.CHARGE,
+        Date.now(),
+      ),
+      this.userDb.insertOrUpdate(userPoint.id, userPoint.point + _amount),
+    ]);
+
+    // 포인트 추가
+    userPoint.point += _amount;
+    return userPoint;
+  }
+
   //#endregion
 
   //#region [Private Methods]
@@ -117,7 +178,8 @@ export class PointService {
    */
   private get ErrorName() {
     return {
-      NotFoundUserId: 'id is not a valid id',
+      NotFoundUserId: 'Failed to validate the id.',
+      ValidPointData: 'Failed to validate the point.',
     } as const;
   }
 
