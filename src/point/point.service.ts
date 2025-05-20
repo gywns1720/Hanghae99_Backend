@@ -36,27 +36,32 @@ export class PointService {
     id: IUserID,
     isRealTimeUpdate: boolean = false,
   ): Promise<UserPoint> {
-    return await this.userDb
-      .selectById(+id)
-      .then((res) => this._updateToUserPoint(id, res, isRealTimeUpdate))
-      .catch((err) => this._errorNotFoundUserId(err));
+    try {
+      return await this.userDb
+        .selectById(+id)
+        .then((res) => this._updateToUserPoint(id, res, isRealTimeUpdate));
+    } catch (err) {
+      // selectById 안의 동기적 예외 발생 여부
+      this._errorNotFoundUserId(err);
+    }
   }
-
   /**
    * @summary 특정 유저 아이디의 포인터 리스트를 가져옵니다.
    * @param userIdOrPointObj {IUserID | UserPoint} 객체 혹은 유저 아이디
    * @throws BadRequestException 유저 아이디 잘못 입력한 경우
    */
   async findPointListAsync(
-    userIdOrPointObj: IUserID | UserPoint,
+    userIdOrPointObj: IUserID | Pick<UserPoint, 'id'>,
   ): Promise<PointHistory[]> {
-    return await this.historyDb
-      .selectAllByUserId(
-        this._isUserPoint(userIdOrPointObj)
+    try {
+      return await this.historyDb.selectAllByUserId(
+        !this._isUserID(userIdOrPointObj)
           ? userIdOrPointObj.id
           : +userIdOrPointObj,
-      )
-      .catch((err) => this._errorNotFoundUserId(err));
+      );
+    } catch (err) {
+      this._errorNotFoundUserId(err);
+    }
   }
 
   /**
@@ -236,17 +241,27 @@ export class PointService {
    * @returns {boolean} true 이면 UserPoint 객체
    */
   private _isUserPoint(
-    instance: IUserID | UserPoint | IUserIDWithEmpty,
+    instance: IUserID | UserPoint | IUserIDWithEmpty | Pick<UserPoint, 'id'>,
   ): instance is UserPoint {
     return (
       typeof instance === 'object' &&
       instance !== null &&
       typeof instance.id === 'number' &&
-      typeof instance.point === 'number' &&
-      typeof instance.updateMillis === 'number'
+      typeof (instance as UserPoint)?.point === 'number' &&
+      typeof (instance as UserPoint)?.updateMillis === 'number'
     );
   }
-
+  /**
+   * @summary UserID 인가?
+   * @param instance {IUserID | UserPoint | IUserIDWithEmpty} 데이터
+   * @private
+   * @returns {boolean} true 이면 IUserID 타입
+   */
+  private _isUserID(
+    instance: IUserID | UserPoint | IUserIDWithEmpty | Pick<UserPoint, 'id'>,
+  ): instance is IUserID {
+    return typeof instance === 'number' || typeof instance === 'string';
+  }
   /**
    * @summary amount 값 설정
    * @param amount {number | string | PointBody} 입력이오는 값
