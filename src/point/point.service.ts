@@ -83,7 +83,7 @@ export class PointService {
     amount: number | PointBody,
   ): Promise<UserPoint> {
     // 기본값 지정
-    let userPoint: UserPoint = await this._findUserPoint(idOrPointObject);
+    const userPoint: UserPoint = await this._findUserPoint(idOrPointObject);
 
     const _amount = this._parseAmount(amount);
 
@@ -121,7 +121,7 @@ export class PointService {
     amount: number | PointBody,
   ): Promise<UserPoint> {
     // 기본값 지정
-    let userPoint: UserPoint = await this._findUserPoint(idOrPointObject);
+    const userPoint: UserPoint = await this._findUserPoint(idOrPointObject);
 
     const _amount = this._parseAmount(amount);
 
@@ -224,6 +224,8 @@ export class PointService {
       ValidPointData: 'Failed to validate the point.',
       // 포인트 부족
       InsufficientPoint: '"Insufficient points.',
+      // UserPointTable Error
+      UserPointError: '올바르지 않은 ID 값 입니다.',
     } as const;
   }
 
