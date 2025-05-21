@@ -47,6 +47,17 @@ describe('PointService 클래스 단위 테스트 입니다.', () => {
         ),
       );
     }
+
+    promiseFuncPointHistoryList.push(
+      modulePointHistoryDB.insert(5, 1000, TransactionType.CHARGE, Date.now()),
+    );
+    promiseFuncPointHistoryList.push(
+      modulePointHistoryDB.insert(5, 3000, TransactionType.CHARGE, Date.now()),
+    );
+    promiseFuncPointHistoryList.push(
+      modulePointHistoryDB.insert(5, 1000, TransactionType.USE, Date.now()),
+    );
+
     await Promise.all(promiseFuncUserList);
     await Promise.all(promiseFuncPointHistoryList);
   });
@@ -271,8 +282,78 @@ describe('PointService 클래스 단위 테스트 입니다.', () => {
         expect(result).toStrictEqual([]);
         expect(result.length).toBe(0);
       });
+      it('타입에 정의되지 않은 데이터를 가지고 포인트 내역을 조회했을 때', async () => {
+        jest
+          .spyOn(modulePointService, 'findPointListAsync')
+          .mockImplementation(
+            async (
+              userIdOrPointObj: IUserID | Pick<UserPoint, 'id'> | UserPoint,
+            ) => {
+              return await modulePointHistoryDB.selectAllByUserId(
+                !isUserId(userIdOrPointObj)
+                  ? userIdOrPointObj.id
+                  : +userIdOrPointObj,
+              );
+            },
+          );
+
+        const result = await modulePointService.findPointListAsync({
+          items: [
+            { name: 'Hun', id: 10 },
+            { name: 'Kim', a: 5 },
+          ],
+        } as any);
+
+        expect(result).toStrictEqual([]);
+        expect(result.length).toBe(0);
+      });
+    });
+    describe('서비스 함수를 만들어서 유저 정보 검색', () => {
+      it('5번 유저의 포인트 내역이 4개 있는가 ?', async () => {
+        const list = await modulePointService.findPointListAsync('5');
+        expect(list.length).toBe(4);
+      });
+      it('5번 유저가 충전된 포인트를 사용한 횟수가 1회이며 충전한 횟수는 3회인가?', async () => {
+        const list = await modulePointService.findPointListAsync('5');
+        expect(
+          list.filter((item) => item.type === TransactionType.USE).length,
+        ).toBe(1);
+        expect(
+          list.filter((item) => item.type === TransactionType.CHARGE).length,
+        ).toBe(3);
+      });
+      it('예기치 못한 값을 넣었을 때 빈 배열로 나오는 가?', async () => {
+        // 문자열 값만 넣을 때
+        const list = await modulePointService.findPointListAsync(
+          '#%TSV fsdfdsvklxcvblxcbvsdfnsdlfnsdlk',
+        );
+        expect(list).toStrictEqual([]);
+        expect(list.length).toBe(0);
+
+        // Infinity 혹은 NaN 을 넣은 상태
+        const list2 = await modulePointService.findPointListAsync(
+          Infinity + -Infinity + NaN,
+        );
+        expect(list2).toStrictEqual([]);
+        expect(list2.length).toBe(0);
+      });
     });
   });
 
+  //#endregion
+
+  //#region [포인트 충전 Or 사용 API]
+  // TODO 목요일 할일
+  describe('포인트 충전 혹은 사용 관련 API', () => {
+    describe('포인트 충전 API', () => {
+      it('1번 유저 포인트 충전 5번을 했을 때 5번 재대로 충전이 되었는에 대한 API', async () => {});
+      it('1번 유저가 포인트를 추가로 문자열("5000") 으로 보냈을 때 문자열을 파싱하고 충전 까지에 대한 API', async () => {});
+      it(
+        '1번 유저가 포인트를 마이너스 값을 넣어 충전했을 때 예외가 발생하는지',
+      );
+      it('1');
+    });
+    describe('포인트 사용 API', () => {});
+  });
   //#endregion
 });
