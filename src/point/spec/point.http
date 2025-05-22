@@ -1,0 +1,51 @@
+
+
+### (유저 1번) 포인트 조회
+GET {{baseUrl}}/point/{{myUserId}}
+Content-Type: application/json
+
+
+### 예외발생 (유저 -1번) 포인트 조회
+GET {{baseUrl}}/point/-1
+Content-Type: application/json
+
+### (유저 1번) 의 히스토리 포인트 조회
+GET {{baseUrl}}/point/{{myUserId}}/histories
+Content-Type: application/json
+
+### 예외발생 (유저 c번) 의 히스토리 포인트 조회
+GET {{baseUrl}}/point/c/histories
+Content-Type: application/json
+
+### 포인트 충전 10000원
+PATCH {{baseUrl}}/point/{{myUserId}}/charge
+Content-Type: application/json
+
+{
+  "amount" : 10000
+}
+
+### 예외발생 포인트 충전 -3000 원 진행
+PATCH {{baseUrl}}/point/{{myUserId}}/charge
+Content-Type: application/json
+
+{
+  "amount" : -3000
+}
+
+### 포인트 사용하기 3000 원 진행
+PATCH {{baseUrl}}/point/{{myUserId}}/use
+Content-Type: application/json
+
+{
+  "amount" : 3000
+}
+
+
+### 예외발생 포인트 사용하기 -3000 원 진행
+PATCH {{baseUrl}}/point/{{myUserId}}/use
+Content-Type: application/json
+
+{
+  "amount" : -3000
+}

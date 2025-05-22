@@ -1,19 +1,12 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   ValidationPipe,
 } from '@nestjs/common';
-import {
-  PointHistory,
-  TransactionType,
-  UserPoint,
-  IUserIDWithEmpty,
-} from './point.model';
+import { PointHistory, UserPoint, IUserIDWithEmpty } from './point.model';
 import { PointBody as PointDto } from './point.dto';
 import { PointService } from './point.service';
 
