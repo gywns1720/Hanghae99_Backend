@@ -85,7 +85,7 @@ export class PointService {
    */
   async chargingPointAsync(
     idOrPointObject: IUserID | UserPoint,
-    amount: number | PointBody,
+    amount: number | PointBody | string,
   ): Promise<UserPoint> {
     // 기본값 지정
     const userPoint: UserPoint = await this._findUserPoint(idOrPointObject);

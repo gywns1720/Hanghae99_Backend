@@ -343,17 +343,125 @@ describe('PointService 클래스 단위 테스트 입니다.', () => {
   //#endregion
 
   //#region [포인트 충전 Or 사용 API]
-  // TODO 목요일 할일
   describe('포인트 충전 혹은 사용 관련 API', () => {
-    describe('포인트 충전 API', () => {
-      it('1번 유저 포인트 충전 5번을 했을 때 5번 재대로 충전이 되었는에 대한 API', async () => {});
-      it('1번 유저가 포인트를 추가로 문자열("5000") 으로 보냈을 때 문자열을 파싱하고 충전 까지에 대한 API', async () => {});
-      it(
-        '1번 유저가 포인트를 마이너스 값을 넣어 충전했을 때 예외가 발생하는지',
-      );
-      it('1');
+    let service: PointService;
+    let newPointHistoryDB: PointHistoryTable = new PointHistoryTable();
+    let newUserPointDB: UserPointTable = new UserPointTable();
+
+    beforeEach(async () => {
+      newPointHistoryDB = new PointHistoryTable();
+      newUserPointDB = new UserPointTable();
+      // 비즈시스 로직
+      service = new PointService(newUserPointDB, newPointHistoryDB);
     });
-    describe('포인트 사용 API', () => {});
+
+    describe('포인트 충전 API', () => {
+      beforeAll(() => {
+        jest.setTimeout(8_000);
+      });
+
+      it('1번 유저 포인트 1000포인트 충전 5번을 했을 때 5000포인트 충전이 되었는가?', async () => {
+        for (let i = 0; i < 5; i++) {
+          await service.chargingPointAsync(1, 1000);
+        }
+
+        const userPoint = await service.findUserAsync(1);
+        expect(userPoint).toBeDefined();
+        expect(userPoint).toHaveProperty('id', 1);
+        expect(userPoint).toHaveProperty('point', 5000);
+      });
+      it('1번 유저 포인트 1000포인트 5번 충전을 문자열 , 숫자, 객체로 보냈을 때  5000 포인트 충전이 되었는가?', async () => {
+        let defaultValue: number | string | { amount: number } = 1000;
+        for (let i = 0; i < 5; i++) {
+          if (i === 2) {
+            defaultValue = {
+              amount: 1000,
+            };
+          } else if (i === 4) {
+            defaultValue = '1000';
+          }
+          await service.chargingPointAsync(1, defaultValue);
+        }
+
+        const userPoint = await service.findUserAsync(1);
+        expect(userPoint).toBeDefined();
+        expect(userPoint).toHaveProperty('id', 1);
+        expect(userPoint).toHaveProperty('point', 5000);
+      });
+      it('1번 유저가 포인트를 마이너스 값을 넣어 충전했을 때 예외가 발생하는지', async () => {
+        await expect(service.chargingPointAsync(1, -5000)).rejects.toThrow(
+          BadRequestException,
+        );
+        await expect(service.chargingPointAsync(1, -5000)).rejects.toThrow(
+          PointService.ErrorName.ValidPointData,
+        );
+      });
+      it('포인트 Infinity 충전시', async () => {
+        await expect(service.chargingPointAsync(1, -Infinity)).rejects.toThrow(
+          BadRequestException,
+        );
+        await expect(service.chargingPointAsync(1, -Infinity)).rejects.toThrow(
+          PointService.ErrorName.ValidPointData,
+        );
+      });
+    });
+    describe('포인트 사용 API', () => {
+      beforeEach(async () => {
+        newPointHistoryDB = new PointHistoryTable();
+        newUserPointDB = new UserPointTable();
+        // 비즈시스 로직
+        service = new PointService(newUserPointDB, newPointHistoryDB);
+
+        // 기본으로 5000원 충전
+        for (let i = 0; i < 5; i++) {
+          await service.chargingPointAsync(1, 1000);
+        }
+      });
+      beforeAll(() => {
+        jest.setTimeout(8_000);
+      });
+
+      it('잔돈 5000원에서 5000원 사용 후 0원이 남아 있는가?', async () => {
+        const userPoint = await service.usingPointAsync(1, 5000);
+        expect(userPoint).toBeDefined();
+        expect(userPoint).toHaveProperty('id', 1);
+        expect(userPoint).toHaveProperty('point', 0);
+      });
+      it('잔돈 5000원에서 7000원 사용 시 잔고 부족이 되는가?', async () => {
+        await expect(service.usingPointAsync(1, 7000)).rejects.toThrow(
+          BadRequestException,
+        );
+        await expect(service.usingPointAsync(1, 7000)).rejects.toThrow(
+          PointService.ErrorName.InsufficientPoint,
+        );
+      });
+
+      it('포인트 3번 사용 후 유저에게 히스토리 3개의 사용 흔적이 나오는가?', async () => {
+        await Promise.all([
+          service.usingPointAsync(1, 1000),
+          service.usingPointAsync(1, 1000),
+          service.usingPointAsync(1, 1000),
+          service.chargingPointAsync(1, 1000),
+        ]);
+
+        const histories = await service.findPointListAsync(1);
+        // 정의 되어있는가?
+        expect(histories).toBeDefined();
+        // 배열인가?
+        expect(Array.isArray(histories)).toBeTruthy();
+        // 사용한 흔적 3개
+        expect(
+          histories.filter((item) => item.type === TransactionType.USE).length,
+        ).toBe(3);
+
+        // 3000 원?
+        expect(
+          histories
+            .filter((item) => item.type === TransactionType.USE)
+            .reduce((prev, curr) => prev + curr.amount, 0),
+        ).toBe(3000);
+      });
+    });
   });
   //#endregion
 });
