@@ -37,7 +37,7 @@
 
 - `jest-html-reporter` E2E 테스트 결과 리포트 HTML 작업 해주는 라이브러리
 
-- week2 : 2주차 과제
+- week2 : 2주차 과제 
 - week3 : 3주차 과제
 - weekN : N주차 과제
 

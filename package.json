@@ -78,12 +78,5 @@
   "jestSonar": {
     "reportPath": "../coverage",
     "reportFile": "sonar_report.xml"
-  },
-  "itdoc": {
-    "output": "docs",
-    "document": {
-      "title": "테스트 문서",
-      "description": "테스트 파일들로 만들어진 Swagger OpenAPI"
-    }
   }
 }
