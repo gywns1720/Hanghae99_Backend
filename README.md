@@ -31,7 +31,11 @@
 
 - `week1` : 1주차 과제
 
+파일 경로 : `src/point/spec`
 
+#### 라이브러리 추가
+
+- `jest-html-reporter` E2E 테스트 결과 리포트 HTML 작업 해주는 라이브러리
 
 - week2 : 2주차 과제
 - week3 : 3주차 과제
