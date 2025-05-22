@@ -33,13 +33,21 @@
 
 파일 경로 : `src/point/spec`
 
+GITHUB 경로 : [링크](https://github.com/gywns1720/Hanghae99_Backend/tree/week1)
+
+1. E2E 결과 : [링크](https://gywns1720.github.io/Hanghae99_Backend/week1/)
+2. 단위 및 통합 테스트 26개
+3. E2E 테스트 테스트 8개
+
 #### 라이브러리 추가
 
 - `jest-html-reporter` E2E 테스트 결과 리포트 HTML 작업 해주는 라이브러리
 
+
+
 - week2 : 2주차 과제 
 - week3 : 3주차 과제
 - weekN : N주차 과제
-
+- gh-pages : 깃허브 액션 워크플로우
 
 
