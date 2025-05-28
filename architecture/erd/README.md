@@ -13,7 +13,7 @@
 ## User
 
 ---
-### 테이블 목차
+### Table Index
 
 1. [`UserMaster` 유저 마스터 테이블](#user_master)
 2. [`UserProfile` 유저 프로필 테이블](#user_profile)
@@ -66,7 +66,8 @@
 - deleted_at 장바구니 유효기간 지나면 제거 **Crontab** 이용
 
 
-### **Version 1** [목차로 돌아가기](#user)
+### **Version 1**
+[목차](#erd)
 ![유저 ERD](../assets/erd/ERD_USER_V1.png)
 #### local_sign
 
@@ -121,3 +122,72 @@
 ---
 
 ## Product
+
+---
+### Table Index
+
+1. [`Product` 상품 테이블](#product)
+2. [`ProductHeader` 상품 헤더 테이블](#product_header)
+3. [`ProductAttachFile` 상품에 참조된 파일 테이블](#product_attach_file)
+4. [`ProductSaleHistory` 상품 판매 내역](#product_sale_history)
+5. [`ProductSale` 상품 판매 정보](#product_sale)
+
+---
+
+### **Version 1** 
+[목차](#erd)
+
+![상품 ERD](../assets/erd/ERD_PRODUCT_V1.png)
+
+
+#### product
+
+- p_id : 상품 PK
+- name : 상품 이름
+- desc : 상품 설명
+- created_at : 상품 생성날짜
+- updated_at : 상품 갱신날짜
+- thumbnail_id : 상품 썸네일 파일 PK
+- stock : 재고량
+
+#### product_header
+상품 리스트 조회할 때 빠르게 보여주도록 설계된 테이블
+product 테이블에서 thumbnail_id  을 이곳에 넣을 예정
+
+- p_id : 상품 아이디 
+- name : 상품 이름
+- updated_at 갱신날짜
+- status : 상품 판매 상태
+- price: 정가 
+- discounted_price 할인 가격
+
+
+#### product_attach_file
+
+- atch_id : 참조 PK
+- p_id : 상품 아이디
+- f_id : 파일 아이디
+- type : 참조 타입 (이미지 0, 비디오 1 이런식)
+
+#### product_sale_history
+
+- h_id : 히스토리 고유 아이디
+- p_id : 상품 고유 아이디
+- sale_cnt : 판매 갯수
+- sale_price : 판매 가격
+- created_at 생성날짜
+- order_id : 주문번호
+- u_id : 구매자 아이디
+- u_name : 구매자 이름 (캐싱)
+- indate : 검색 인덱스 년월일 구성 date 보다는 정수값이 검색에 빠르기 때문 
+- name : 상품 이름 (상품명이 변경되도 유지 되도록 설정)
+- desc 상품 설명 (name 과 마찬가지)
+- thumbnail_id : 썸네일 이미지
+
+
+#### product_sale
+
+- p_id : 상품 고유 아이디 
+- sale_cnt : 상품 최대 판매 갯수
+- sale_price : 상품 촘 금액
+- updated_at 갱신날짜
