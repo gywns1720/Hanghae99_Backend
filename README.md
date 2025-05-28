@@ -14,8 +14,8 @@
 
 #### 선택한 시나리오
 
-- **e-커머스 서비스** (https://teamsparta.notion.site/e-1f52dc3ef5148199b230ff9ec74be86b)
-  - [링크](https://teamsparta.notion.site/e-1f52dc3ef5148199b230ff9ec74be86b)
+- **e-커머스 서비스** 
+  - [참고 사이트](https://teamsparta.notion.site/e-1f52dc3ef5148199b230ff9ec74be86b)
 
 #### 개발 환경 준비
 
@@ -44,16 +44,17 @@
 
 ---
 
-### Milestone & 스프린트
+### Milestone & 스프린트 
 
-아키텍쳐 링크 : [README.md](./architecture/README.md)
+- 아키텍쳐 링크 : [README.md](./architecture/README.md)
+- 마일 스톤[Projects 링크](https://github.com/users/gywns1720/projects/5)
 
-[링크](https://github.com/users/gywns1720/projects/5)
 
-- 링크 안들어가질 경우 
-```text
-https://github.com/users/gywns1720/projects/5
-```
+> 링크 안들어가질 경우 
+> ```text
+> https://github.com/users/gywns1720/projects/5
+> ```
+
 ### 구현해야할 항목
 
 #### Description
@@ -96,7 +97,7 @@ https://github.com/users/gywns1720/projects/5
 
 ### 모놀리스 방식 (✅ 선택)
 
-![초안](architecture/assets/00_Init.png)
+![초안](./architecture/assets/00_Init.png)
 
 - Client -> Nginx -> Pm2 Cluster -> Nest Application
 
@@ -135,7 +136,7 @@ ERD README : [README.md](./architecture/erd/README.md)
 3. 트래픽이 매우 클 때
 4. 전체 시스템 다운이어지는 것을 막고 싶을 때
 
-![초안](architecture/assets/02_Init.png)
+![초안](./architecture/assets/02_Init.png)
 
 - Client -> Nginx -> Pm2 Cluster -> Nest Microservice 
 
