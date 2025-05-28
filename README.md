@@ -97,7 +97,7 @@
 
 ### 모놀리스 방식 (✅ 선택)
 
-![초안](./architecture/assets/00_Init.png)
+![초안](./architecture/assets/00_init.png)
 
 - Client -> Nginx -> Pm2 Cluster -> Nest Application
 
@@ -136,7 +136,7 @@ ERD README : [README.md](./architecture/erd/README.md)
 3. 트래픽이 매우 클 때
 4. 전체 시스템 다운이어지는 것을 막고 싶을 때
 
-![초안](./architecture/assets/02_Init.png)
+![초안](./architecture/assets/02_init.png)
 
 - Client -> Nginx -> Pm2 Cluster -> Nest Microservice 
 

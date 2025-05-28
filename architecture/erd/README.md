@@ -27,17 +27,17 @@
 
 ---
 
-- **Version 2** [목차로 돌아가기](#user)
+### **Version 2** [목차로 돌아가기](#user)
 ![유저 ERD](../assets/erd/ERD_USER_V2.png)
 
-### user_product_storage
+#### user_product_storage
 
 - s_id : 상품 보관 PK
 - p_id : 상품 PK 
 - cnt : 갯수
 - u_id : 유저 PK
 
-### event_join_user
+#### event_join_user
 
 - u_id : 유저 PK
 - ev_id : 이벤트 식별 PK
@@ -66,14 +66,14 @@
 - deleted_at 장바구니 유효기간 지나면 제거 **Crontab** 이용
 
 
-- **Version 1** [목차로 돌아가기](#user)
+### **Version 1** [목차로 돌아가기](#user)
 ![유저 ERD](../assets/erd/ERD_USER_V1.png)
-### local_sign
+#### local_sign
 
 - email : 로그인할 이메일
 - pw : 로그인할 비밀번호
 
-### user_master
+#### user_master
 
 - u_id : 유저 PK
 - is_cookie_approval : 쿠키 허가 여부
@@ -90,7 +90,7 @@
 - login_at : 최신 로그인 날짜
 - logout_at : 최신 로그아웃 날짜
 
-### user_profile
+#### user_profile
 
 - u_id : 유저 PK
 - name : 유저 이름
@@ -100,7 +100,7 @@
 - point : 현재 포인트
 
 
-### user_point_history
+#### user_point_history
 
 - p_id : 포인트 PK
 - u_id : 유저 PK
@@ -109,7 +109,7 @@
 - point : 사용한 포인트
 - created_at : 생성된 날짜
 
-### user_payment_history
+#### user_payment_history
 
 - p_id : 포인트 PK
 - u_id : 유저 PK
