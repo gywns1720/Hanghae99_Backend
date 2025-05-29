@@ -8,6 +8,7 @@
 
 1. [유저 테이블](#user)
 2. [상품 테이블](#product)
+3. [주문 및 기타 테이블](#order-and-event)
 
 ---
 ## User
@@ -191,3 +192,87 @@ product 테이블에서 thumbnail_id  을 이곳에 넣을 예정
 - sale_cnt : 상품 최대 판매 갯수
 - sale_price : 상품 촘 금액
 - updated_at 갱신날짜
+
+---
+
+## Order And Event
+
+---
+### Table Index
+
+1. [`Order` 주문 테이블](#order)
+2. [`OrderDetail` 주문 디테일 테이블](#order_detail)
+3. [`OrderUsingCoupon` 주문에 사용한 쿠폰 테이블](#order_using_coupon)
+4. [`Coupon` 쿠폰 테이블](#coupon)
+5. [`EventCoupon` 이벤트 쿠폰 테이블](#event_coupon)
+
+---
+
+### **Version 1**
+[목차](#erd)
+
+![주문 ERD](../assets/erd/ERD_ORDER_V1.png)
+![기타 ERD](../assets/erd/ERD_EVENT_V1.png)
+
+
+#### order
+
+유저는 내 주문 리스트 정보를 가지고 있는 테이블 
+
+- order_id 주문 식별 번호
+- u_id 주문 받은 유저
+- total_price 총 주문 금액
+- final_price 최종 금액
+- status 주문 상태
+- created_at 생성날짜
+- indate 검색 인덱스
+
+#### order_detail
+
+해당 주문에 대한 디테일 정보가 들어있는 테이블 
+product 테이블과 독립성을 위해 p_name , unit_price 저장
+
+- detail_id 디테일 식별 코드
+- order_id 주문 식별 코드
+- p_id 상품 아이디
+- p_name 상품이름
+- unit_price 상품 단가
+- quantity 구매 갯수
+- total_price 총 상품 금액
+- created_at 생성날짜
+
+#### order_using_coupon
+
+해당 주문에 쿠폰은 어떤걸 썻는지 알려주는 테이블
+마찬가지로 쿠폰제목이 있는 경우 DB로 쿠폰 정보 독립적 유지
+나중에 주문한 상품을 사고 5만원 상품권이라는 이름으로 쿠폰을 썼는데 나중에 쿠폰 확인했을 때 거기서 이미 사용했던 쿠폰 정보로 출력해야하기 때문이다. 
+DB에 5000원 썼던걸 40000으로 바꾸면 혼란스럽기 때문
+
+- detail_id 디테일 식별 코드
+- order_id 주문 식별 코드 
+- cp_id 쿠폰 아이디 
+- title 쿠폰 제목
+- desc 쿠폰 설명
+- discount_price 쿠폰 할인가
+- type 쿠폰 타입 (어떤 쿠폰 타입 퍼센트?, 금액?)
+- cp_schema 쿠폰 색상 (UI 용)
+
+#### coupon
+
+- cp_id 쿠폰 아이디
+- discount_price 쿠폰 할인가
+- type 쿠폰 타입 (어떤 쿠폰 타입 퍼센트?, 금액?)
+- title 쿠폰 제목
+- desc 쿠폰 설명
+- created_at 생성날짜
+- expiration_day 유효기간
+- cp_schema 쿠폰 색상 (UI 용)
+
+#### event_coupon 
+
+- ev_id 이벤트 아이디
+- cp_id 쿠폰 아이디
+- target 목표 수량
+- created_at 생성날짜
+- expires_at 생성날짜
+- is_stop 중지여부
