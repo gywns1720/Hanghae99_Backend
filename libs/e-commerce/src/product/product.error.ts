@@ -31,6 +31,13 @@ export class ProductError extends CustomError {
   static SearchErrorProduct() {
     return new ProductError('Search Error Product', 402);
   }
-
+  /**
+   * @summary 유저를 찾을 수 없습니다.
+   *
+   * @constructor
+   */
+  static NotFoundUser() {
+    return new ProductError('NotFoundUser', 403);
+  }
   //#endregion
 }

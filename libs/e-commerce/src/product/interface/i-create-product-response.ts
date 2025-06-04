@@ -1,1 +1,3 @@
-export interface ICreateProductResponse {}
+export interface ICreateProductResponse {
+  productId: string;
+}

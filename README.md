@@ -13,7 +13,12 @@
 
 ## 구조 설정
 
-- 모놀리식 변경
+- 모놀리식 변경 
+
+### 레이아웃
+
+- 컨트롤러 -> Service -> Command Or Query -> Repository
+
 
 ### apps
 
