@@ -5,24 +5,27 @@ import { plainToInstance } from 'class-transformer';
 import { ProductDomain } from '@lib/e-commerce/product/domain/product.domain';
 
 describe('Create Product Command 관련 테스트 코드 작성 준비', () => {
-  it('상품을 생성했는가?', async () => {
-    const mockUserRepo: Pick<IRepository<UserDomain>, 'findOneItem'> = {
+  let mockUserRepo: Pick<IRepository<UserDomain>, 'findOneItem'> | null = null;
+  let mockProductRepo: Pick<IRepository<ProductDomain>, 'createItems'> | null =
+    null;
+  let randomUtils: { uuid: () => string } | null = null;
+  it('상품 생성을 위한 목업이 제대로 되었는가?', async () => {
+    mockUserRepo = {
       findOneItem: jest.fn().mockResolvedValue(
         plainToInstance(UserDomain, {
           id: 'user',
           name: '목업유저',
+          profile: null,
         } as UserDomain),
       ),
     };
 
-    const mockProductRepo: Pick<IRepository<ProductDomain>, 'createItems'> = {
+    mockProductRepo = {
       createItems: jest.fn(),
     };
-
-    const randomUtils = {
-      uuid: jest.fn().mockResolvedValue('new'),
+    randomUtils = {
+      uuid: jest.fn().mockReturnValue('new'),
     };
-
     const useCase = new CreateProductUseCase(
       mockUserRepo,
       mockProductRepo,
@@ -41,5 +44,6 @@ describe('Create Product Command 관련 테스트 코드 작성 준비', () => {
     expect(mockUserRepo.findOneItem).toHaveBeenCalled();
     expect(mockProductRepo.createItems).toHaveBeenCalled();
     expect(randomUtils.uuid).toHaveBeenCalled();
+    expect(caseResult.productId).toBe('new');
   });
 });

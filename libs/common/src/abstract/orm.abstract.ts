@@ -6,7 +6,7 @@ import type { IRepository } from '@lib/common/type';
  * @extends Repository
  * @implements IRepository
  */
-export abstract class OrmAbstractRepository<T extends ObjectLiteral>
+export default abstract class Orm<T extends ObjectLiteral>
   extends Repository<T>
   implements IRepository<T>
 {

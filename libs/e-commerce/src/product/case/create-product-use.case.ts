@@ -1,21 +1,19 @@
-import { IRepository } from '@lib/common/type';
+import { ICreateItems, IFindOneItem } from '@lib/common/type';
 import { ProductDomain } from '@lib/e-commerce/product/domain/product.domain';
 import { CreateProductCaseDto } from '@lib/e-commerce/product/case/create-product-case.dto';
 import { ICreateProductResponse } from '@lib/e-commerce/product/interface';
 import { UserDomain } from '@lib/e-commerce/user/domain/user.domain';
 import { RandomUtils } from '@lib/common/utils';
 import { ProductError } from '@lib/e-commerce/product/product.error';
+import { plainToInstance } from 'class-transformer';
 
 /**
  * @summary 테스트 코드에 사용하는 제품 관련
  */
 export default class CreateProductUseCase {
   constructor(
-    protected readonly userRepo: Pick<IRepository<UserDomain>, 'findOneItem'>,
-    protected readonly produceRepo: Pick<
-      IRepository<ProductDomain>,
-      'createItems'
-    >,
+    protected readonly userRepo: IFindOneItem<UserDomain>,
+    protected readonly produceRepo: ICreateItems<ProductDomain>,
     protected readonly randomUtils: RandomUtils,
   ) {}
 
@@ -33,12 +31,15 @@ export default class CreateProductUseCase {
     const today = new Date().toUTCString();
 
     // 제품 생성
-    await this.produceRepo.createItems({
-      id: newProductId,
-      createdAt: today,
-      updatedAt: today,
-      ...dto,
-    });
+    await this.produceRepo.createItems(
+      plainToInstance(ProductDomain, {
+        id: newProductId,
+        createdAt: today,
+        updatedAt: today,
+        stock: Math.abs(dto.stock),
+        ...dto,
+      }),
+    );
 
     return {
       productId: newProductId,

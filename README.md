@@ -36,22 +36,8 @@
 
 - e-commerce 관련된 라이브러리 뭉침
   - **product** : 상품
-  - **order** : 주문
-  - **payment** : 결제
+  - **order** : 주문/결제
+  - **user** : 유저 / 포인트
 
-#### backup
 
-- 이 라이브러리는 기존에 있던 소스파일을 이곳에 백업해 두는 역활
 
-### 과제
-
-#### 추가 설치
-
-```bash
-npm install --save @nestjs/cqrs
-```
-
-#### 아키텍쳐
-
-- CQRS 패턴 사용
-- 

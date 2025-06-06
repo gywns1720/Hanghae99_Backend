@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
-import { CreateProductCommand } from '@lib/e-commerce/product/commands/create-product.command';
+import { CreateProductCommand } from '@lib/e-commerce/product/command/create-product.command';
 import { ICreateProductResponse } from '@lib/e-commerce/product/interface';
 
 @CommandHandler(CreateProductCommand)
@@ -13,6 +13,6 @@ export class CreateProductHandler
   async execute(
     command: CreateProductCommand,
   ): Promise<ICreateProductResponse> {
-    return {};
+    return { productId: '' };
   }
 }

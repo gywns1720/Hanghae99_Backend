@@ -1,5 +1,5 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
-import { FindOneProductQuery } from '@lib/e-commerce/product/queries/find-one-product.query';
+import { FindOneProductQuery } from '@lib/e-commerce/product/query/find-one-product.query';
 import { IFindOneProductResponse } from '@lib/e-commerce/product/interface';
 
 @QueryHandler(FindOneProductQuery)

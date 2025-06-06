@@ -1,3 +1,5 @@
+import { QueryRunner } from 'typeorm';
+
 /**
  * @summary 리미트 옵션
  */
@@ -7,8 +9,7 @@ export type ILimitOptions = ILimitAndQueryRunner | IPageAndQueryRunner;
  * @summary QueryRunner 인터페이스
  */
 export interface IQueryRunner {
-  // TODO typeorm 설치 후 QueryRunner 옵션 설정 (트랜잭션)
-  runner?: any;
+  runner?: QueryRunner;
 }
 
 /**

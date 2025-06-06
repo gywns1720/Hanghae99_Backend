@@ -1,6 +1,6 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs';
 import { IFindOneProductResponse } from '@lib/e-commerce/product/interface';
-import { FindManyProductQuery } from '@lib/e-commerce/product/queries/find-many-product.query';
+import { FindManyProductQuery } from '@lib/e-commerce/product/query/find-many-product.query';
 
 @QueryHandler(FindManyProductQuery)
 export class FindManyProductHandler

@@ -1,5 +1,10 @@
 import { FindManyLimitSizeQuery } from '@lib/common/queries';
-import type { ILimitOptions } from '@lib/common/type';
+import type { IPageAndQueryRunner } from '@lib/common/type';
+
+type FindManyProductQueryProps = {
+  readonly name?: string;
+  readonly stock?: number;
+};
 
 /**
  * @summary 여러개의 상품을 조회하는 쿼리
@@ -7,8 +12,8 @@ import type { ILimitOptions } from '@lib/common/type';
  */
 export class FindManyProductQuery extends FindManyLimitSizeQuery {
   constructor(
-    public readonly id: string,
-    public options: ILimitOptions = {
+    public readonly props: FindManyProductQueryProps,
+    public readonly options: IPageAndQueryRunner = {
       type: 'page',
       page: 1,
       size: 50,

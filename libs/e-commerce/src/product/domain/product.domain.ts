@@ -1,19 +1,30 @@
-import type { IDateString, IPrimaryKey, ICount } from '@lib/common/type';
-import { IsOptional, IsString } from 'class-validator';
+import type { IDateString, IPrimaryKey, INull, ICount } from '@lib/common/type';
+import { IsDateString, IsOptional, IsString } from 'class-validator';
+import Domain from '@lib/common/abstract/domain.abstract';
+import { Type } from 'class-transformer';
+import { IsCustomNumber } from '@lib/common/decorator';
 
 /**
  * @summary 제품 도메인
  */
-export class ProductDomain {
+export class ProductDomain extends Domain {
   @IsString()
   id: IPrimaryKey;
   @IsString()
   name: string;
   @IsString()
   @IsOptional()
-  desc: string | null;
+  desc: INull<string>;
+  @Type(() => Date)
+  @IsDateString()
+  @IsOptional()
   createdAt: IDateString;
+  @IsString()
   thumbnail: IPrimaryKey;
-  updatedAt: IDateString | null;
+  @Type(() => Date)
+  @IsDateString()
+  @IsOptional()
+  updatedAt: INull<IDateString>;
+  @IsCustomNumber()
   stock: ICount;
 }
