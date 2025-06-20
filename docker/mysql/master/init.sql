@@ -1,0 +1,5 @@
+
+-- Create repl User
+CREATE USER 'repl'@'%' IDENTIFIED BY 'repl123';
+GRANT REPLICATION SLAVE ON *.* TO 'repl'@'%';
+FLUSH PRIVILEGES;

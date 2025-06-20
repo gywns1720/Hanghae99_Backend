@@ -1,4 +1,10 @@
-import { DataSource, EntityTarget, ObjectLiteral, Repository } from 'typeorm';
+import {
+  DataSource,
+  EntityManager,
+  EntityTarget,
+  ObjectLiteral,
+  Repository,
+} from 'typeorm';
 import type { IRepository } from '@lib/common/type';
 
 /**
@@ -11,11 +17,14 @@ export default abstract class Orm<T extends ObjectLiteral>
   implements IRepository<T>
 {
   protected readonly classType: 'Repository';
+  protected readonly repo: Repository<T>;
   protected constructor(
     protected readonly entity: EntityTarget<T>,
     protected readonly dataSource: DataSource,
+    readonly manager: EntityManager = dataSource.createEntityManager(),
   ) {
-    super(entity, dataSource.createEntityManager());
+    super(entity, manager);
+    this.repo = manager.getRepository<T>(entity); // 이 repo 를 활용
     this.classType = 'Repository';
   }
   abstract findOneItem(id: string): Promise<T>;

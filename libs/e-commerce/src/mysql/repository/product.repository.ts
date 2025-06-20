@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ProductEntity } from '../entities';
-import { DataSource } from 'typeorm';
+import { DataSource, EntityManager } from 'typeorm';
 import Orm from '@lib/common/abstract/orm.abstract';
 
 /**
@@ -8,22 +8,38 @@ import Orm from '@lib/common/abstract/orm.abstract';
  */
 @Injectable()
 export class ProductRepository extends Orm<ProductEntity> {
-  constructor(readonly dataSource: DataSource) {
-    super(ProductEntity, dataSource);
+  constructor(
+    readonly dataSource: DataSource,
+    manager?: EntityManager,
+  ) {
+    super(
+      ProductEntity,
+      dataSource,
+      manager ?? dataSource.createEntityManager(),
+    );
   }
 
   //#region [Abstract Methods]
-  findOneItem(id: string): Promise<ProductEntity> {
-    throw new Error('Method not implemented.');
+  async findOneItem(id: string): Promise<ProductEntity> {
+    const repo = this.dataSource.getRepository(ProductEntity);
+    const item = await repo.findOneBy({ id });
+    if (!item) throw new Error(`Product not found. id=${id}`);
+    return item;
   }
-  createItems(...entities: ProductEntity[]): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async createItems(...entities: ProductEntity[]): Promise<void> {
+    const repo = this.dataSource.getRepository(ProductEntity);
+    await repo.save(entities);
   }
-  deleteItem(id: string): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async deleteItem(id: string): Promise<void> {
+    const repo = this.dataSource.getRepository(ProductEntity);
+    await repo.delete(id);
   }
-  updateItem(id: string, item: Partial<ProductEntity>): Promise<void> {
-    throw new Error('Method not implemented.');
+
+  async updateItem(id: string, item: Partial<ProductEntity>): Promise<void> {
+    const repo = this.dataSource.getRepository(ProductEntity);
+    await repo.update(id, item);
   }
   //#endregion
 }
