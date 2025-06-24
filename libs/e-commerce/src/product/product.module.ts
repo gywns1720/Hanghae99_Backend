@@ -3,6 +3,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CreateProductHandler } from '@lib/e-commerce/product/handler/create-product.handler';
 import { FindOneProductHandler } from '@lib/e-commerce/product/handler/find-one-product.handler';
 import { FindManyProductHandler } from '@lib/e-commerce/product/handler/find-many-product.handler';
+import { PurchaseProductHandler } from '@lib/e-commerce/product/handler/purchase-product.handler';
 
 /**
  * @Module 제품 모듈
@@ -13,6 +14,7 @@ import { FindManyProductHandler } from '@lib/e-commerce/product/handler/find-man
     CreateProductHandler,
     FindOneProductHandler,
     FindManyProductHandler,
+    PurchaseProductHandler,
   ],
   exports: [CqrsModule],
 })

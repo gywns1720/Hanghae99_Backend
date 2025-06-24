@@ -22,7 +22,7 @@ export class ProductRepository extends Orm<ProductEntity> {
   //#region [Abstract Methods]
   async findOneItem(id: string): Promise<ProductEntity> {
     const repo = this.dataSource.getRepository(ProductEntity);
-    const item = await repo.findOneBy({ id });
+    const item = await repo.findOneBy({ p_id: id });
     if (!item) throw new Error(`Product not found. id=${id}`);
     return item;
   }
