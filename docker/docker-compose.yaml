@@ -13,7 +13,8 @@ services:
     volumes:
       - master-data:/var/lib/mysql
     networks:
-      - mysql-net
+      utils-network:
+        - ipv4_address: 172.20.0.3
   mysql-replica1:
     build:
       context: ./mysql/replica
@@ -30,8 +31,8 @@ services:
     depends_on:
       - mysql-master
     networks:
-      - mysql-net
-
+      utils-network:
+        - ipv4_address: 172.20.0.4
   mysql-replica2:
     build:
       context: ./mysql/replica
@@ -48,8 +49,8 @@ services:
     depends_on:
       - mysql-master
     networks:
-      - mysql-net
-
+      utils-network:
+        - ipv4_address: 172.20.0.5
 
 volumes:
   master-data:
@@ -57,4 +58,8 @@ volumes:
   replica2-data:
 
 networks:
-  mysql-net:
+  utils-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

@@ -17,13 +17,31 @@ const Keys = ['Master', 'Node1', 'Node2', 'Node3'];
 // .env 값으로 대체
 
 for (let i = 0; i < Keys.length; i++) {
+  const upperCaseKey = Keys[i].toUpperCase();
   try {
     const result = template.replace(/\{([A-Z0-9_]+)\}/g, (_, key) => {
-      const value = process.env[`${Keys[i]}_${key}`];
-      if (value === undefined) {
-        throw new Error(`Missing environment variable: ${key}`);
+      if (key === 'SLAVE_OF') {
+        if (Keys[i] === 'Master') {
+          return '';
+        }
+        const value = process.env[`${upperCaseKey}_${key}`];
+        const valuePort = process.env[`${upperCaseKey}_${key}_PORT`];
+        if (isNaN(+valuePort)) {
+          throw new Error(
+            `Missing environment Number variable: ${valuePort} ${`${upperCaseKey}_${key}_PORT`}`,
+          );
+        }
+        if (value === undefined) {
+          throw new Error(`Missing environment variable: ${key}`);
+        }
+        return `slaveof ${value} ${valuePort}`;
+      } else {
+        const value = process.env[`${upperCaseKey}_${key}`];
+        if (value === undefined) {
+          throw new Error(`Missing environment variable: ${key}`);
+        }
+        return value;
       }
-      return value;
     });
     // 폴더 생성
     const dir = path.resolve(__dirname, Keys[i].toLowerCase());
