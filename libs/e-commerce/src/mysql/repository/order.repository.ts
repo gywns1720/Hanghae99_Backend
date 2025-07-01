@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import Orm from '@lib/common/abstract/orm.abstract';
-import { ProductEntity } from '@lib/e-commerce/mysql/entities/product.entity';
+import { OrderEntity } from '@lib/e-commerce/mysql/entities/order.entity';
 
 /**
  * @Repository
  */
 @Injectable()
-export class ProductRepository extends Orm<ProductEntity> {
+export class OrderRepository extends Orm<OrderEntity> {
   constructor(readonly dataSource: DataSource) {
-    super(ProductEntity, dataSource);
+    super(OrderEntity, dataSource);
   }
 }

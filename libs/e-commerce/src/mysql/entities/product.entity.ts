@@ -1,23 +1,24 @@
-import { Entity, PrimaryColumn } from 'typeorm';
-import { IDateString, IMoney, INull, IPrimaryKey } from '@lib/common/type';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { ICount, IMoney } from '@lib/common/type';
+import { IProduct } from '@lib/e-commerce/product/i-product';
 
 /**
- * @Entity
+ * @Entity 상품
  */
 @Entity('product')
 export class ProductEntity {
-  @PrimaryColumn({ type: 'varchar', length: 36 })
-  p_id: IPrimaryKey;
+  // PK
+  @PrimaryGeneratedColumn()
+  id: IProduct;
 
-  name: string;
+  // 제목
+  @Column({ type: 'varchar', length: 120 })
+  title: string;
 
-  desc: INull<string>;
-
-  created_at: IDateString;
-
-  updated_at: INull<IDateString>;
-
-  thumbnail_id: INull<IPrimaryKey>;
-
-  stock: IMoney;
+  // 재고량
+  @Column({ type: 'int', default: 0 })
+  amount: ICount;
+  // 금액 (개당)
+  @Column({ type: 'int', default: 0 })
+  price: IMoney;
 }

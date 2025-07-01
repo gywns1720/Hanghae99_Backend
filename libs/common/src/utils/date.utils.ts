@@ -1,25 +1,44 @@
+import 'dayjs/locale/ko';
 import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
 import * as timezone from 'dayjs/plugin/timezone';
 import * as isSameOrBefore from 'dayjs/plugin/isSameOrBefore';
 import * as isSameOrAfter from 'dayjs/plugin/isSameOrAfter';
+import * as LocalizedFormat from 'dayjs/plugin/localizedFormat';
 import * as customParseFormat from 'dayjs/plugin/customParseFormat';
 import * as isBetween from 'dayjs/plugin/isBetween';
+import * as isoWeek from 'dayjs/plugin/isoWeek';
 import * as weekOfYear from 'dayjs/plugin/weekOfYear';
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.extend(isSameOrBefore);
-dayjs.extend(isSameOrAfter);
-dayjs.extend(customParseFormat);
-dayjs.extend(isBetween);
-dayjs.extend(weekOfYear);
-
 /**
- * @summary ChatGPT 로 만든 DateUtils 클래스
+ * @summary  DateUtils 클래스
  *
  */
 export class DateUtils {
+  // 플러그인 셋팅 여부
+  protected static isPluginSetting: boolean = false;
+
+  /**
+   * @summary 플러그인을 셋팅합니ㅏㄷ.
+   */
+  static pluginSetting() {
+    if (DateUtils.isPluginSetting) {
+      return;
+    }
+
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+    dayjs.extend(isSameOrBefore);
+    dayjs.extend(LocalizedFormat);
+    dayjs.extend(isSameOrAfter);
+    dayjs.extend(customParseFormat);
+    dayjs.extend(isoWeek);
+    dayjs.extend(isBetween);
+    dayjs.extend(weekOfYear);
+    dayjs.tz.setDefault('Asia/Seoul');
+    DateUtils.isPluginSetting = true;
+  }
+
   /** 현재 시간 (기본 로컬) */
   static now(): dayjs.Dayjs {
     return dayjs();
