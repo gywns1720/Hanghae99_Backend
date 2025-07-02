@@ -7,4 +7,5 @@ export * from './i-null-undefined';
 export * from './i-money';
 export * from './i-response';
 export * from './i-typeorm';
+export * from './i-redis';
 // #endregion

@@ -2,19 +2,34 @@ import { DynamicModule, Global, Module } from '@nestjs/common';
 import Redis, { Cluster } from 'ioredis';
 import ProviderConst from '@lib/common/const/provider.const';
 import { ConfigService } from '@nestjs/config';
+import { IRedis } from '@lib/common/type';
 export interface RedisModuleOptions {
   mode: 'standalone' | 'cluster';
   host?: string;
   port?: number;
   clusterNodes?: { host: string; port: number }[];
 }
-type DynamicRedisModuleForRootProps = {
+type Callback = (configService: ConfigService) => IRedis;
+type PromiseCallback = (configService: ConfigService) => Promise<IRedis>;
+type forRootFactoryProps = {
   // 글로벌 여부
   isGlobal?: boolean;
 
+  onFactory: Callback | PromiseCallback;
+};
+type DynamicRedisModuleForRootProps = Pick<forRootFactoryProps, 'isGlobal'> & {
   // 포트
   port?: number;
 };
+function isPromise<T = any>(value: any): value is Promise<T> {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    typeof value.then === 'function' &&
+    typeof value.catch === 'function'
+  );
+}
+
 /**
  * @Module
  */
@@ -79,6 +94,30 @@ export class DynamicRedisModule {
               host: config.get('REDIS_HOST'),
               port: config.get<number>('REDIS_PORT'),
             });
+          },
+        },
+      ],
+      exports: [ProviderConst.Redis],
+    };
+  }
+
+  static forRootFactory({
+    isGlobal,
+    onFactory,
+  }: forRootFactoryProps): DynamicModule {
+    return {
+      module: DynamicRedisModule,
+      global: isGlobal,
+      providers: [
+        {
+          provide: ProviderConst.Redis,
+          inject: [ConfigService],
+          useFactory: async (config: ConfigService) => {
+            if (isPromise<PromiseCallback>(onFactory)) {
+              return await (onFactory as PromiseCallback)(config);
+            } else {
+              return onFactory(config);
+            }
           },
         },
       ],
