@@ -1,4 +1,5 @@
 import { QueryRunner } from 'typeorm';
+import { ICommand } from '@nestjs/cqrs';
 
 type UpdateOutboxOptions = {
   // 아이디
@@ -12,6 +13,6 @@ type UpdateOutboxOptions = {
   // Query Runner
   runner?: QueryRunner;
 };
-export class UpdateOutboxCommand {
+export class UpdateOutboxCommand implements ICommand {
   constructor(readonly options: UpdateOutboxOptions) {}
 }

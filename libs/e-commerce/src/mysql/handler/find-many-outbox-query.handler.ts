@@ -7,7 +7,7 @@ import ProviderConst from '@lib/common/const/provider.const';
 import { OutboxEntity } from '@lib/e-commerce/mysql/entities';
 
 @QueryHandler(FindManyOutboxQuery)
-export class FindManyOutboxQueryHandler
+export class FindManyOutboxHandler
   implements IQueryHandler<FindManyOutboxQuery>
 {
   constructor(protected readonly repo: OutboxRepository) {}
