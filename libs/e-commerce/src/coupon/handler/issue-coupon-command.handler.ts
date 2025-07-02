@@ -7,6 +7,16 @@ import { IRedis } from '@lib/common/type';
 import { Inject } from '@nestjs/common';
 import ProviderConst from '@lib/common/const/provider.const';
 
+/**
+ * @summary 쿠폰을 유저에게 발행
+ * @desc
+ *
+ * - Database 로 쿠폰 받은 유저 리스트 정보 보관 해야함
+ * - if 문 연발 말고 로직 분리 필요.
+ * - redis 루아스크립트 쓴 로직을 다른 provider 로 등록할지 고민.
+ *   => 만약 예약 발송, 즉시 발송 같이 분리가 될 경우 같은 로직을 써야 하므로, EventHandler -> Command 호출 이 되니 사이드로 빠져야 함.
+ *
+ */
 @CommandHandler(IssueCouponCommand)
 export class IssueCouponCommandHandler
   implements ICommandHandler<IssueCouponCommand, IssueCouponCommandResponse>

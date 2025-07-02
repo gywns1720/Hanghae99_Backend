@@ -1,5 +1,6 @@
 const ProviderConst = {
   Redis: 'REDIS_CLIENT',
+  AuthStrategies: 'AUTH_STRATEGY',
   Processor: {
     Product: {
       // 랭킹 업데이트 (product-rank.processor.ts)

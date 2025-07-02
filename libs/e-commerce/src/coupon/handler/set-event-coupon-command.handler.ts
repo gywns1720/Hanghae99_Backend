@@ -5,6 +5,14 @@ import ProviderConst from '@lib/common/const/provider.const';
 import { IRedis } from '@lib/common/type';
 import { MathUtils } from '@lib/common/utils';
 
+/**
+ * @summary 이벤트 쿠폰 레디스 셋팅
+ *
+ * - 레디스 이벤트 키 리스트를 관리하는 배열 필요.
+ * - 이벤트 추가 및 발행은 DB로 히스토리 관리 필요.
+ * - switch 문 말고 State Pattern 쓸지 고민중
+ *
+ */
 @CommandHandler(SetEventCouponCommand)
 export class SetEventCouponCommandHandler
   implements ICommandHandler<SetEventCouponCommand>
