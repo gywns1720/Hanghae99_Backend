@@ -3,6 +3,7 @@ import { ShopModule } from './shop/shop.module';
 import { ECommerceModule } from '@lib/e-commerce';
 import { ConfigModule } from '@nestjs/config';
 import * as process from 'node:process';
+import { UserGatewayModule } from './user/user-gateway.module';
 
 /**
  * @Module
@@ -14,6 +15,7 @@ import * as process from 'node:process';
       isGlobal: true,
       envFilePath: ['.env', `./.env.${process.env.NODE_ENV || 'local'}`],
     }),
+    UserGatewayModule,
     ECommerceModule,
   ],
 })
