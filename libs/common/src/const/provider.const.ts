@@ -20,6 +20,9 @@ const ProviderConst = {
       // 쿠폰 수령
       Claimed: (couponId: string | number) => `coupon:claimed:${couponId}`,
     },
+    User: {
+      LockKey: (id: string | number) => `lock:userid:${id}`,
+    },
   },
 } as const;
 
