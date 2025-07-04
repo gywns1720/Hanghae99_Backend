@@ -8,36 +8,7 @@
 
 ## 현재 브랜치
 
-- week3 (3주차)
+- week7 (7주차)
 
-
-## 구조 설정
-
-- 모놀리식 변경 
-
-### 레이아웃
-
-- 컨트롤러 -> Service -> Command Or Query -> Repository
-
-
-### apps
-
-#### gateway-server
-
-- 메인 서버 (마이크로서비스 변경시 Gateway Server 역활)
-
-### Libs
-
-#### common
-
-- 모든 libs 혹은 apps 에 공통으로 사용할 라이브러리 모음
-
-#### e-commerce
-
-- e-commerce 관련된 라이브러리 뭉침
-  - **product** : 상품
-  - **order** : 주문/결제
-  - **user** : 유저 / 포인트
-
-
-
+  이커머스 시나리오
+  가장 많이 주문한 상품 랭킹을 Redis 기반으로 개발하고 설계 및 구현
