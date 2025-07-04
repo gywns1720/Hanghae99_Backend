@@ -3,6 +3,7 @@ import { UserDomain } from '@lib/e-commerce/user/domain/user.domain';
 import { Type } from 'class-transformer';
 import { IMoney } from '@lib/common/type';
 import { IsOptional } from 'class-validator';
+import { IsCustomNumber } from '@lib/common/decorator';
 
 /**
  * @domain
@@ -17,7 +18,7 @@ export class CreateUserDomain extends OmitType(UserDomain, [
     nullable: true,
     required: false,
   })
-  @Type(() => Number)
+  @IsCustomNumber()
   @IsOptional()
   point?: IMoney | null;
 }

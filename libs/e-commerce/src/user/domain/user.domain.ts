@@ -4,6 +4,7 @@ import { IMoney } from '@lib/common/type';
 import { IUserPK } from '@lib/e-commerce/user/i-user';
 import { Type } from 'class-transformer';
 import * as Joi from 'joi';
+import { IsCustomNumber } from '@lib/common/decorator';
 /**
  * @domain
  */
@@ -24,7 +25,7 @@ export class UserDomain {
   name: string;
 
   @ApiProperty({ example: '포인트', default: 0 })
-  @Type(() => Number)
+  @IsCustomNumber()
   point: IMoney;
 
   static schema() {
