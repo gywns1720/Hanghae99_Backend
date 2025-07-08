@@ -13,6 +13,7 @@ const ProviderConst = {
       RankingAmount: 'product:ranking:amount',
       // 판매량 랭킹
       RankingPrice: 'product:ranking:price',
+      Stock: (couponId: string | number) => 'product:stock:' + couponId,
     },
     Coupon: {
       // 재고량

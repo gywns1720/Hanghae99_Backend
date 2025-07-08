@@ -1,10 +1,11 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
 import { ICount, IMoney } from '@lib/common/type';
 import { IProduct } from '@lib/e-commerce/product/i-product';
 
 /**
  * @Entity 상품
  */
+@Index('product_version_id_index', ['id', 'version'])
 @Entity('product')
 export class ProductEntity {
   // PK
@@ -21,4 +22,6 @@ export class ProductEntity {
   // 금액 (개당)
   @Column({ type: 'int', default: 0 })
   price: IMoney;
+  @Column({ type: 'int', default: 0 })
+  version: number;
 }
