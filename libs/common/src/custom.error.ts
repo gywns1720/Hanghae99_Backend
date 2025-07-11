@@ -6,9 +6,8 @@ import { HttpStatus } from '@nestjs/common';
 export abstract class CustomError {
   /**
    * @summary 메세지
-   * @protected
    */
-  protected message: string;
+  message: string;
   /**
    * @summary 에러코드
    * @protected

@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { DateUtils } from '@lib/common/utils/date.utils';
 /**
  * @summary 랜덤 유틸
  */
@@ -95,5 +96,45 @@ export class RandomUtils {
     const footerStr = randomStr.substring(24, 28);
 
     return `${headerStr}${bodyStr}${dateStr}${footerStr}`;
+  }
+
+  /**
+   * @summary 유니크 아이디를 리스트 형태로 생성합니다. (중복없음)
+   * @param header {string} 머리말
+   * @param count {number} 카운트
+   */
+  static generatorUnionIDList(header: string, count: number): string[] {
+    // 시도 횟수
+    let totalAttempts = 0;
+    // 파라미터에서 받은 카운트가 0 이하로 내려가지 않도록 진행
+    const maxCount = Math.max(1, count);
+    // 너무 많은 시도 후에도 실패하는 경우
+    const MAX_TOTAL_ATTEMPTS = maxCount * 100; // 예시
+    // 중복 방지
+    const unionIDSet = new Set<string>();
+    // 현재 아이디 진행 갯수
+    let currCnt = 0;
+    // 무한루프 방지 위한 시간 카운트
+    let timeCnt = 0;
+    const today = DateUtils.today();
+    while (currCnt < maxCount && totalAttempts < MAX_TOTAL_ATTEMPTS) {
+      if (timeCnt >= 10) {
+        today.add(1, 'seconds');
+      }
+      const id = RandomUtils.generatorID(header, today);
+      if (!unionIDSet.has(id)) {
+        currCnt += 1;
+        timeCnt = 0;
+        unionIDSet.add(id);
+      }
+      timeCnt += 1;
+      totalAttempts++;
+    }
+
+    if (totalAttempts >= MAX_TOTAL_ATTEMPTS) {
+      throw new Error('Failed to generate unique IDs after maximum attempts');
+    }
+
+    return Array.from(unionIDSet);
   }
 }

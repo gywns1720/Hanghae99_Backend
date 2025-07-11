@@ -1,6 +1,13 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  Index,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { ICount, IMoney } from '@lib/common/type';
 import { IProduct } from '@lib/e-commerce/product/i-product';
+import { BasketEntity } from '@lib/e-commerce/mysql/entities/basket.entity';
 
 /**
  * @Entity 상품
@@ -24,4 +31,7 @@ export class ProductEntity {
   price: IMoney;
   @Column({ type: 'int', default: 0 })
   version: number;
+
+  @OneToMany(() => BasketEntity, (item) => item.productInfo, { cascade: false })
+  basketList?: BasketEntity[];
 }

@@ -12,5 +12,5 @@ export interface IResponseData<T = any> {
 export type ITransaction<T> = {
   payload: T;
   error: string | null | Error | CustomError;
-  isSuccess: false;
+  isSuccess: boolean;
 };
