@@ -9,6 +9,14 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
+    "start:gateway": "nest start gateway-server",
+    "start:user": "nest start user-server",
+    "start:order": "nest start order-server",
+    "start:log": "nest start log-server",
+    "start:dev:gateway": "nest start gateway-server --watch",
+    "start:dev:user": "nest start user-server --watch",
+    "start:dev:order": "nest start order-server --watch",
+    "start:dev:log": "nest start log-server --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/apps/hhplus-cicd-sample/main",
@@ -26,6 +34,7 @@
     "@nestjs/core": "^10.3.2",
     "@nestjs/cqrs": "^11.0.3",
     "@nestjs/mapped-types": "^2.1.0",
+    "@nestjs/microservices": "^10.0.0",
     "@nestjs/platform-express": "^10.3.2",
     "@nestjs/schedule": "^6.0.0",
     "@nestjs/serve-static": "^4.0.2",
@@ -109,7 +118,8 @@
       "^@lib/product(|/.*)$": "<rootDir>/libs/product/src/$1",
       "^@lib/order(|/.*)$": "<rootDir>/libs/order/src/$1",
       "^@backup/backup(|/.*)$": "<rootDir>/libs/backup/src/$1",
-      "^@lib/common(|/.*)$": "<rootDir>/libs/common/src/$1"
+      "^@lib/common(|/.*)$": "<rootDir>/libs/common/src/$1",
+      "^@app/kafka(|/.*)$": "<rootDir>/libs/kafka/src/$1"
     }
   },
   "jestSonar": {
