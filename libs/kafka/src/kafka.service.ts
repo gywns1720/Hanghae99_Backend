@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import KafkaConst from '@app/kafka/kafka.const';
 import { Consumer, Kafka, Producer } from 'kafkajs';
+import { DateUtils } from '@lib/common/utils';
 
 @Injectable()
 export class KafkaService implements OnModuleInit, OnModuleDestroy {
@@ -61,5 +62,18 @@ export class KafkaService implements OnModuleInit, OnModuleDestroy {
         }
       },
     });
+  }
+
+  /**
+   * @summary 이벤트 메세지를 생성합니다.
+   * @param action {string} 액션 명령어
+   * @param data {unknown} 데이터
+   */
+  createEventMessage<D = unknown>(action: string, data: D) {
+    return {
+      action: action,
+      data,
+      timestamp: DateUtils.today().toISOString(),
+    };
   }
 }

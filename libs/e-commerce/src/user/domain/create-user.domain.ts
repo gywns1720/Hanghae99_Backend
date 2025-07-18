@@ -1,6 +1,5 @@
 import { ApiProperty, OmitType } from '@nestjs/swagger';
 import { UserDomain } from '@lib/e-commerce/user/domain/user.domain';
-import { Type } from 'class-transformer';
 import { IMoney } from '@lib/common/type';
 import { IsOptional } from 'class-validator';
 import { IsCustomNumber } from '@lib/common/decorator';

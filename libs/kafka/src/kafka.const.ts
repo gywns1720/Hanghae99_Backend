@@ -25,5 +25,11 @@ const KafkaConst = {
     ORDER_EVENT: 'order-event',
     LOG_EVENT: 'log-event',
   } as const,
+  Actions: {
+    User: {
+      CreateUser: 'action.create.user',
+      FindOneUser: 'action.find.one.user',
+    },
+  } as const,
 };
 export default KafkaConst;

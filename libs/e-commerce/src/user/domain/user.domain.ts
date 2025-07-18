@@ -2,9 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 import { IMoney } from '@lib/common/type';
 import { IUserPK } from '@lib/e-commerce/user/i-user';
-import { Type } from 'class-transformer';
+import { plainToInstance, Type } from 'class-transformer';
 import * as Joi from 'joi';
 import { IsCustomNumber } from '@lib/common/decorator';
+import { UserEntity } from '@lib/e-commerce/mysql/entities';
 /**
  * @domain
  */
@@ -16,7 +17,7 @@ export class UserDomain {
   @ApiProperty({ example: '유저 아이디' })
   @IsString()
   id: string;
-  @ApiProperty({ example: '유저 아이디' })
+  @ApiProperty({ example: '패스워드' })
   @IsString()
   pw: string;
 
@@ -36,5 +37,20 @@ export class UserDomain {
       name: Joi.string().max(100).required(),
       point: Joi.number().min(0).required(),
     });
+  }
+
+  static fromEntityToDomain(entity: UserEntity, isInstance: boolean = false) {
+    const getData = (entity: UserEntity) => {
+      return {
+        __pk: entity.user_pk,
+        point: entity.point,
+        name: entity.name,
+        id: entity.id,
+        pw: entity.pw,
+      } as UserDomain;
+    };
+    return !isInstance
+      ? getData(entity)
+      : plainToInstance(UserDomain, getData(entity));
   }
 }
