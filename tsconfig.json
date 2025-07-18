@@ -16,6 +16,56 @@
     "noImplicitAny": false,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@lib/e-commerce": [
+        "libs/e-commerce/src"
+      ],
+      "@lib/e-commerce/*": [
+        "libs/e-commerce/src/*"
+      ],
+      "@lib/mysql": [
+        "libs/mysql/src"
+      ],
+      "@lib/mysql/*": [
+        "libs/mysql/src/*"
+      ],
+      "@lib/redis": [
+        "libs/redis/src"
+      ],
+      "@lib/redis/*": [
+        "libs/redis/src/*"
+      ],
+      "@lib/product": [
+        "libs/product/src"
+      ],
+      "@lib/product/*": [
+        "libs/product/src/*"
+      ],
+      "@lib/order": [
+        "libs/order/src"
+      ],
+      "@lib/order/*": [
+        "libs/order/src/*"
+      ],
+      "@backup/backup": [
+        "libs/backup/src"
+      ],
+      "@backup/backup/*": [
+        "libs/backup/src/*"
+      ],
+      "@lib/common": [
+        "libs/common/src"
+      ],
+      "@lib/common/*": [
+        "libs/common/src/*"
+      ],
+      "@app/kafka": [
+        "libs/kafka/src"
+      ],
+      "@app/kafka/*": [
+        "libs/kafka/src/*"
+      ]
+    }
   }
 }

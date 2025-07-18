@@ -1,0 +1,45 @@
+
+name: E2E 리포트 페이지 를 깃허브 페이지로
+
+# Trigger Event
+on:
+  # 모든 브렌치에서 푸쉬가 발생했을 때
+  push:
+    branches:
+      - '**'
+
+# Runner
+jobs:
+  deploy:
+    if: github.ref != 'refs/heads/gh-pages'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run E2E tests & generate report
+        run: |
+          set -e
+          npm run test:e2e
+          mkdir -p ./temp-report/${{ github.ref_name }}
+          cp ./docs/e2e-test-report.html ./temp-report/${{ github.ref_name }}/index.html
+
+      - name: Generate commit message
+        id: meta
+        run: |
+          DATE=$(TZ=Asia/Seoul date "+%Y-%m-%d %H:%M (KST)")
+          STATUS="✅ PASS"
+          echo "msg=ci: $STATUS | ${{ github.ref_name }} | $DATE" >> $GITHUB_OUTPUT
+
+      - name: E2E Test Report
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./temp-report
+          publish_branch: gh-pages
+          keep_files: true
+          user_name: GitHub Actions
+          user_email: actions@github.com

@@ -1,0 +1,21 @@
+{
+  "moduleFileExtensions": ["js", "json", "ts"],
+  "rootDir": ".",
+  "testEnvironment": "node",
+  "testRegex": ".e2e-spec.ts$",
+  "transform": {
+    "^.+\\.(t|j)s$": "ts-jest"
+  },
+  "reporters": [
+    "default",
+    [
+      "jest-html-reporter",
+      {
+        "pageTitle": "E2E Test Report",
+        "outputPath": "./docs/e2e-test-report.html",
+        "includeFailureMsg": true,
+        "includeConsoleLog": true
+      }
+    ]
+  ]
+}

@@ -1,0 +1,8 @@
+
+
+[mysqld]
+server-id=${SERVER_REPLICA_ID}
+log-bin=mysql-bin
+relay-log=relay-log
+read-only=1
+

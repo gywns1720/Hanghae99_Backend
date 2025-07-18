@@ -1,0 +1,4 @@
+[mysqld]
+server-id=${SERVER_ID}
+log-bin=mysql-bin
+binlog-do-db=ecommerce_db
